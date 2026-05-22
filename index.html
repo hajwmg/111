@@ -148,16 +148,14 @@
             if (initialEl) initialEl.style.display = 'block';
         }
 
-        // [핵심] 카카오톡 인앱 브라우저 강제 탈출 스크립트
+        // 카카오톡 인앱 브라우저 강제 탈출 스크립트
         const userAgent = navigator.userAgent.toLowerCase();
         const targetUrl = window.location.href;
 
         if (userAgent.match(/kakaotalk/i)) {
-            // 안드로이드 카카오톡 아웃링크 처리
             if (userAgent.match(/android/i)) {
                 window.location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=http;package=com.android.chrome;end';
             } 
-            // 아이폰 카카오톡 아웃링크 처리
             else if (userAgent.match(/iphone|ipad|ipod/i)) {
                 window.location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
             }
@@ -223,8 +221,16 @@
 
             <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 mb-6" id="address-box">
                 <p id="addr-badge" class="text-[10px] font-black mb-2 opacity-30 tracking-widest uppercase inline-block px-2 py-0.5 rounded bg-slate-200">Office Location</p>
-                <p id="addr-title" class="text-xs font-bold mb-1">본사 (Wonju HQ)</p>
-                <p id="address-text" class="text-[11px] text-slate-500 leading-relaxed">강원특별자치도 원주시 문막읍 동화공단로 110-1</p>
+                
+                <div class="mb-3">
+                    <p id="addr-title-1" class="text-xs font-bold text-slate-800 mb-0.5">서울 사무실 (근무지)</p>
+                    <p id="address-text-1" class="text-[11px] text-slate-500 leading-relaxed">서울특별시 강남구 삼성동 봉은사로 439 (CC빌딩 5층)</p>
+                </div>
+                
+                <div class="pt-2 border-t border-slate-200/60">
+                    <p id="addr-title-2" class="text-xs font-bold text-slate-400 mb-0.5">본사</p>
+                    <p id="address-text-2" class="text-[11px] text-slate-400 leading-relaxed">강원특별자치도 원주시 문막읍 동화공단로 110-1</p>
+                </div>
             </div>
 
             <div class="text-center opacity-30 mt-6">
@@ -242,16 +248,20 @@
                     name: "하지원", sub: "Jiwon Ha", 
                     role: "| 마케팅담당자",
                     btn: "연락처 저장하기", 
-                    addrTitle: "본사 (Wonju HQ)",
-                    addr: "강원특별자치도 원주시 문막읍 동화공단로 110-1",
+                    t1: "서울 사무실 (근무지)",
+                    addr1: "서울특별시 강남구 삼성동 봉은사로 439 (CC빌딩 5층)",
+                    t2: "본사",
+                    addr2: "강원특별자치도 원주시 문막읍 동화공단로 110-1",
                     web: "메가메디칼 공식 홈페이지"
                 },
                 en: { 
                     name: "Jiwon Ha", sub: "", 
                     role: "| Marketing Manager",
                     btn: "Save Contact", 
-                    addrTitle: "Wonju HQ",
-                    addr: "110-1, Donghwagongdan-ro, Munmak-eup, Wonju-si, Gangwon-do, Korea",
+                    t1: "Seoul Office (Workplace)",
+                    addr1: "5F, CC Bldg, 439, Bongeunsa-ro, Gangnam-gu, Seoul, Korea",
+                    t2: "Headquarters",
+                    addr2: "110-1, Donghwagongdan-ro, Munmak-eup, Wonju-si, Gangwon-do, Korea",
                     web: "Mega Medical Official Site"
                 }
             }[lang];
@@ -259,8 +269,10 @@
             document.getElementById('name-sub').textContent = t.sub;
             document.getElementById('title-badge').textContent = t.role;
             document.getElementById('btn-text').textContent = t.btn;
-            document.getElementById('addr-title').textContent = t.addrTitle;
-            document.getElementById('address-text').textContent = t.addr;
+            document.getElementById('addr-title-1').textContent = t.t1;
+            document.getElementById('address-text-1').textContent = t.addr1;
+            document.getElementById('addr-title-2').textContent = t.t2;
+            document.getElementById('address-text-2').textContent = t.addr2;
             document.getElementById('web-title').textContent = t.web;
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id.includes(lang)));
         }
@@ -272,7 +284,6 @@
             setTimeout(() => { toast.className = ""; }, 2500);
         }
 
-        // 모바일 시스템 주소록 직행 다운로드 함수
         function downloadVCard() {
             const vCardParts = [
                 "BEGIN:VCARD",
@@ -283,14 +294,12 @@
                 "TITLE:마케팅담당자",
                 "TEL;TYPE=CELL;TYPE=PREF:010-2792-8993",
                 "EMAIL;TYPE=WORK:jwha@megamedical.co.kr",
-                "ADR;TYPE=WORK;CHARSET=UTF-8:;;110-1, Donghwagongdan-ro, Munmak-eup;Wonju-si;Gangwon-do;26365;Korea",
+                "ADR;TYPE=WORK;CHARSET=UTF-8:;;5F\\, CC Bldg\\, 439\\, Bongeunsa-ro;Gangnam-gu;Seoul;;Korea",
                 "URL:https://www.megamedical.co.kr",
                 "END:VCARD"
             ];
             
             const vCardString = vCardParts.join("\r\n");
-            
-            // 모바일 순정 브라우저에서 데이터 연동이 가장 확실한 인코딩 방식 적용
             const uri = "data:text/vcard;charset=utf-8," + encodeURIComponent(vCardString);
             
             const a = document.createElement('a');
