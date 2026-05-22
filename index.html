@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <meta property="og:type" content="website">
-    <meta property="og:title" content="메가메디칼 하지원 사원">
-    <meta property="og:description" content="영업기획팀 하지원입니다.">
+    <meta property="og:title" content="메가메디칼 하지원 마케팅담당자">
+    <meta property="og:description" content="영업기획팀 마케팅담당자 하지원입니다.">
     <meta property="og:image" content="https://www.megamedical.co.kr/img/common/logo.png">
 
     <title>Mega Medical - Jiwon Ha</title>
@@ -175,7 +175,7 @@
                     <span id="name-sub" class="text-lg font-normal text-slate-400">Jiwon Ha</span>
                 </h1>
                 <p id="job-title" class="text-sm font-bold text-slate-500 mt-1">
-                    영업기획팀 <span style="color: var(--theme-color);">| 사원</span>
+                    영업기획팀 <span id="title-badge" style="color: var(--theme-color);">| 마케팅담당자</span>
                 </p>
                 <div class="h-1.5 w-10 mt-4 rounded-full" style="background-color: var(--theme-color);"></div>
             </div>
@@ -225,6 +225,7 @@
             const t = {
                 ko: { 
                     name: "하지원", sub: "Jiwon Ha", 
+                    role: "| 마케팅담당자",
                     btn: "연락처 저장하기", 
                     addrTitle: "본사 (Wonju HQ)",
                     addr: "강원특별자치도 원주시 문막읍 동화공단로 110-1",
@@ -232,6 +233,7 @@
                 },
                 en: { 
                     name: "Jiwon Ha", sub: "", 
+                    role: "| Marketing Manager",
                     btn: "Save Contact", 
                     addrTitle: "Wonju HQ",
                     addr: "110-1, Donghwagongdan-ro, Munmak-eup, Wonju-si, Gangwon-do, Korea",
@@ -240,6 +242,7 @@
             }[lang];
             document.getElementById('name-main').textContent = t.name;
             document.getElementById('name-sub').textContent = t.sub;
+            document.getElementById('title-badge').textContent = t.role;
             document.getElementById('btn-text').textContent = t.btn;
             document.getElementById('addr-title').textContent = t.addrTitle;
             document.getElementById('address-text').textContent = t.addr;
@@ -254,14 +257,34 @@
             setTimeout(() => { toast.className = ""; }, 2500);
         }
 
+        // 휴대폰 주소록으로 정보가 즉시 들어가는 vCard 빌더
         function downloadVCard() {
-            const vCardData = "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:하지원\r\nORG:메가메디칼\r\nTITLE:사원\r\nTEL;TYPE=CELL:010-2792-8993\r\nEMAIL:jwha@megamedical.co.kr\r\nADR;TYPE=WORK:;;110-1, Donghwagongdan-ro, Munmak-eup;Wonju-si;Gangwon-do;;Korea\r\nEND:VCARD";
-            const blob = new Blob([vCardData], { type: 'text/vcard' });
+            const vCardData = [
+                "BEGIN:VCARD",
+                "VERSION:3.0",
+                "FN:메가메디칼 하지원",
+                "N:하지원;메가메디칼;;;",
+                "ORG:메가메디칼;영업기획팀",
+                "TITLE:마케팅담당자",
+                "TEL;TYPE=CELL;TYPE=PREF:010-2792-8993",
+                "EMAIL;TYPE=WORK:jwha@megamedical.co.kr",
+                "ADR;TYPE=WORK:;;110-1, Donghwagongdan-ro, Munmak-eup;Wonju-si;Gangwon-do;26365;Korea",
+                "URL:https://www.megamedical.co.kr",
+                "END:VCARD"
+            ].join("\r\n");
+
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = 'Jiwon_Ha.vcf';
+            
+            a.href = url; 
+            a.download = 'MegaMedical_JiwonHa.vcf';
+            document.body.appendChild(a);
             a.click();
-            showToast("연락처 파일 다운로드 시작");
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showToast("연락처 파일이 다운로드되었습니다.");
         }
     </script>
 </body>
